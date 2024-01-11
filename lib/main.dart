@@ -1,5 +1,7 @@
 // import 'dart:math';
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:scroll_master/scroll_common.dart';
@@ -38,6 +40,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final _scrollPos = ValueNotifier(0.0);
   final _sectionIndex = ValueNotifier(0);
+  final List<GlobalKey> myKeys = [
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,40 +58,49 @@ class _HomeScreenState extends State<HomeScreen> {
         //     min(MediaQuery.of(context).size.width, 800) * 1.2;
 
         return PopRouterOnOverScroll(
-            controller: _scroller,
-            child: TopCenter(
-              child: FocusTraversalGroup(
-                child: FullscreenKeyboardListScroller(
-                  scrollController: _scroller,
-                  child: CustomScrollView(
-                    controller: _scroller,
-                    // scrollBehavior: ScrollConfiguration.of(context).copyWith(),
-                    key: const PageStorageKey('editorial'),
-                    slivers: [
-                      SliverAppBar(
-                        pinned: true,
-                        // floating: true,
-                        title: Text("Scrolling Master"),
-                        collapsedHeight: minAppBarHeight,
-                        toolbarHeight: minAppBarHeight,
-                        backgroundColor: Colors.white,
-                        elevation: 0,
-                        flexibleSpace: SizedBox.expand(
-                          child: _AppBar(
-                            sectionIndex: _sectionIndex,
-                          ),
+          controller: _scroller,
+          child: TopCenter(
+            child: FocusTraversalGroup(
+              child: FullscreenKeyboardListScroller(
+                scrollController: _scroller,
+                child: CustomScrollView(
+                  controller: _scroller,
+                  // scrollBehavior: ScrollConfiguration.of(context).copyWith(),
+                  key: const PageStorageKey('editorial'),
+                  slivers: [
+                    SliverAppBar(
+                      pinned: true,
+                      // floating: true,
+                      title: const Text("Scrolling Master"),
+                      collapsedHeight: minAppBarHeight,
+                      toolbarHeight: minAppBarHeight,
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                      flexibleSpace: SizedBox.expand(
+                        child: _AppBar(
+                          sectionIndex: _sectionIndex,
+                          keys: myKeys,
                         ),
                       ),
+                    ),
 
-                      /// Editorial content (text and images)
-                      ScrollingContent(
-                          scrollPos: _scrollPos,
-                          sectionNotifier: _sectionIndex),
-                    ],
-                  ),
+                    /// Editorial content (text and images)
+                    ScrollingContent(
+                      scrollPos: _scrollPos,
+                      sectionNotifier: _sectionIndex,
+                      keys: myKeys,
+                    ),
+                    const SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 400,
+                      ),
+                    )
+                  ],
                 ),
               ),
-            ));
+            ),
+          ),
+        );
       }),
     );
   }
@@ -114,11 +132,10 @@ final sections = [
 ];
 
 class _AppBar extends StatelessWidget {
-  const _AppBar({
-    Key? key,
-    required this.sectionIndex,
-  }) : super(key: key);
+  const _AppBar({Key? key, required this.sectionIndex, required this.keys})
+      : super(key: key);
   final ValueNotifier<int> sectionIndex;
+  final List<GlobalKey> keys;
   @override
   Widget build(BuildContext context) {
     return BottomCenter(
@@ -127,6 +144,20 @@ class _AppBar extends StatelessWidget {
         builder: (_, value, __) {
           return _CircularTitleBar(
             index: value,
+            keys: keys,
+            value: (value) {
+              sectionIndex.value = value;
+              final targetContext = keys[sectionIndex.value].currentContext;
+              if (targetContext != null) {
+                // log(targetContext.toString(),
+                //     name: "TARGET CONTEXT AVAILALE");
+                Scrollable.ensureVisible(
+                  targetContext,
+                  duration: const Duration(milliseconds: 400),
+                  curve: Curves.easeInOut,
+                );
+              }
+            },
           );
         },
       ),
@@ -146,9 +177,13 @@ class BottomCenter extends Align {
 }
 
 class _CircularTitleBar extends StatelessWidget {
-  const _CircularTitleBar({Key? key, required this.index}) : super(key: key);
+  const _CircularTitleBar(
+      {Key? key, required this.index, required this.value, required this.keys})
+      : super(key: key);
 
   final int index;
+  final ValueChanged<int> value;
+  final List<GlobalKey> keys;
 
   @override
   Widget build(BuildContext context) {
@@ -159,28 +194,29 @@ class _CircularTitleBar extends StatelessWidget {
       offset: const Offset(0, 1),
       child: SizedBox(
         height: barSize,
-        child: SizedBox(
-          height: 50,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: sections.length,
-              itemBuilder: ((context, currentIndex) {
-                return TextButton(
-                    style: OutlinedButton.styleFrom(
-                        foregroundColor: index == currentIndex
-                            ? Colors.purple
-                            : Colors.black),
-                    onPressed: (() {}),
-                    child: Text('index$currentIndex')
-                        .animate(key: ValueKey(currentIndex))
-                        .fade()
-                        .scale(
-                            begin: .5,
-                            end: 1,
-                            curve: Curves.easeOutBack,
-                            duration: 400.ms));
-              })),
-        ),
+        child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: sections.length,
+            itemBuilder: ((context, currentIndex) {
+              return TextButton(
+                  style: TextButton.styleFrom(
+                      foregroundColor:
+                          index == currentIndex ? Colors.purple : Colors.black,
+                      splashFactory: InkSparkle.splashFactory,
+                      shape: const StadiumBorder()),
+                  onPressed: () {
+                    value(currentIndex);
+                    log(currentIndex.toString(), name: "Calling value");
+                  },
+                  child: Text('index$currentIndex')
+                      .animate(key: ValueKey(currentIndex))
+                      .fade()
+                      .scale(
+                          begin: .5,
+                          end: 1,
+                          curve: Curves.easeOutBack,
+                          duration: 400.ms));
+            })),
       ),
     );
   }

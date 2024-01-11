@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:scroll_master/main.dart';
 
 import 'section_divider.dart';
 
 class ScrollingContent extends StatelessWidget {
   const ScrollingContent(
-      {Key? key, required this.scrollPos, required this.sectionNotifier})
+      {Key? key, required this.scrollPos, required this.sectionNotifier, required this.keys})
       : super(key: key);
   final ValueNotifier<double> scrollPos;
   final ValueNotifier<int> sectionNotifier;
+  final List<Key> keys;
   @override
   Widget build(BuildContext context) {
     return SliverBackgroundColor(
@@ -16,37 +18,50 @@ class ScrollingContent extends StatelessWidget {
       sliver: SliverPadding(
         padding: const EdgeInsets.symmetric(vertical: 24),
         sliver: SliverList(
-          delegate: SliverChildListDelegate.fixed([
-            Center(
-              child: SizedBox(
-                // width: 800,
-                child: Column(children: [
-                  SectionDivider(scrollPos, sectionNotifier, index: 0),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  SectionDivider(scrollPos, sectionNotifier, index: 1),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  SectionDivider(scrollPos, sectionNotifier, index: 2),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  SectionDivider(scrollPos, sectionNotifier, index: 3),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  SectionDivider(scrollPos, sectionNotifier, index: 4),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                  const HeightBox(150),
-                ]),
-              ),
-            ),
-          ]),
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Container(
+                  height: 300,
+                  key: keys[index],
+                  margin: const EdgeInsets.all(17),
+                  color: Colors.purple.shade100,
+                  child:
+                      SectionDivider(scrollPos, sectionNotifier, index: index));
+            },
+            childCount: sections.length,
+          ),
+
+          //  SliverChildListDelegate.fixed([
+          //   Center(
+          //     child: SizedBox(
+          //       // width: 800,
+          //       child: Column(children: [
+          //         SectionDivider(scrollPos, sectionNotifier, index: 0),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         SectionDivider(scrollPos, sectionNotifier, index: 1),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         SectionDivider(scrollPos, sectionNotifier, index: 2),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         SectionDivider(scrollPos, sectionNotifier, index: 3),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         SectionDivider(scrollPos, sectionNotifier, index: 4),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //         const HeightBox(150),
+          //       ]),
+          //     ),
+          //   ),
+          // ]),
         ),
       ),
     );

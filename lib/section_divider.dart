@@ -51,7 +51,7 @@ class SectionDividerState extends State<SectionDivider>
             padding: const EdgeInsets.symmetric(vertical: 20),
             child: Column(
               children: [
-                Text("index${widget.sectionNotifier.value}"),
+                Text("index${widget.index}"),
                 CompassDivider(isExpanded: value),
               ],
             ),
