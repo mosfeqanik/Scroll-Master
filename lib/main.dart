@@ -2,8 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-
+// import 'package:flutter_animate/flutter_animate.dart';
 
 final class Sections {
   final String value;
@@ -191,14 +190,7 @@ class _AppBarState extends State<_AppBar> {
                             }
                           }
                         },
-                        child: Text(widget.sections[currentIndex].value)
-                            .animate(key: ValueKey(currentIndex))
-                            .fade()
-                            .scale(
-                                begin: .5,
-                                end: 1,
-                                curve: Curves.easeOutBack,
-                                duration: 400.ms));
+                        child: Text(widget.sections[currentIndex].value));
                   })),
             ),
           );
@@ -218,6 +210,7 @@ class BottomCenter extends Align {
             child: child,
             alignment: Alignment.bottomCenter);
 }
+
 class SectionDivider extends StatefulWidget {
   const SectionDivider(
       {Key? key,
