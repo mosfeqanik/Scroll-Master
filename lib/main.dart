@@ -63,6 +63,12 @@ class _HomePageState extends State<HomePage> {
     GlobalKey(),
   ];
   @override
+  void dispose() {
+    _scroller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -70,13 +76,10 @@ class _HomePageState extends State<HomePage> {
       ),
       body: CustomScrollView(
         controller: _scroller,
-        // scrollBehavior: ScrollConfiguration.of(context).copyWith(),
         key: const PageStorageKey('editorial'),
         slivers: [
           SliverAppBar(
             pinned: true,
-            // floating: true,
-            // collapsedHeight: 80,
             toolbarHeight: 80,
             backgroundColor: Colors.white,
             elevation: 0,
@@ -98,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                       key: myKeys[index],
                       margin: const EdgeInsets.all(17),
                       color: Colors.purple.shade100,
-                      child: SectionDivider(
+                      child: SectionDesctipion(
                         scrollNotifier: _scrollPos,
                         sectionNotifier: _sectionIndex,
                         index: index,
@@ -162,21 +165,16 @@ class _AppBarState extends State<_AppBar> {
                             shape: const StadiumBorder()),
                         onPressed: () {
                           if (widget.sectionIndex.value != currentIndex) {
-                            log(currentIndex.toString(), name: "TAPPED INDEX");
                             widget.sectionIndex.value = currentIndex;
-                            log("${widget.sectionIndex.value}",
-                                name: "SELECTION INDEX");
+
                             final targetContext =
                                 widget.keys[currentIndex].currentContext;
                             if (targetContext != null) {
-                              log(currentIndex.toString(),
-                                  name: "Calling value");
                               Scrollable.ensureVisible(
                                 targetContext,
                                 duration: const Duration(milliseconds: 400),
                                 curve: Curves.easeInOut,
                               );
-                              // ScrollController().createScrollPosition(physics, context, oldPosition)
                             } else {
                               final sectionPosition =
                                   currentIndex * 300.0; // Adjust as needed
@@ -185,8 +183,6 @@ class _AppBarState extends State<_AppBar> {
                                 duration: const Duration(milliseconds: 500),
                                 curve: Curves.easeInOut,
                               );
-                              log(targetContext.toString(),
-                                  name: "Context AVAILABLE $currentIndex");
                             }
                           }
                         },
@@ -211,8 +207,8 @@ class BottomCenter extends Align {
             alignment: Alignment.bottomCenter);
 }
 
-class SectionDivider extends StatefulWidget {
-  const SectionDivider(
+class SectionDesctipion extends StatefulWidget {
+  const SectionDesctipion(
       {Key? key,
       required this.index,
       required this.scrollNotifier,
@@ -225,10 +221,10 @@ class SectionDivider extends StatefulWidget {
   final String values;
 
   @override
-  State<SectionDivider> createState() => SectionDividerState();
+  State<SectionDesctipion> createState() => SectionDesctipionState();
 }
 
-class SectionDividerState extends State<SectionDivider>
+class SectionDesctipionState extends State<SectionDesctipion>
     with SingleTickerProviderStateMixin {
   final _isActivated = ValueNotifier(false);
 
