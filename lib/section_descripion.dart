@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'context_utils.dart';
 
-class SectionDesctipion extends StatefulWidget {
-  const SectionDesctipion(
+class SectionDescription extends StatefulWidget {
+  const SectionDescription(
       {Key? key,
       required this.index,
       required this.scrollNotifier,
@@ -18,10 +18,10 @@ class SectionDesctipion extends StatefulWidget {
   final String values;
 
   @override
-  State<SectionDesctipion> createState() => SectionDesctipionState();
+  State<SectionDescription> createState() => SectionDescriptionState();
 }
 
-class SectionDesctipionState extends State<SectionDesctipion>
+class SectionDescriptionState extends State<SectionDescription>
     with SingleTickerProviderStateMixin {
   final _isActivated = ValueNotifier(false);
 

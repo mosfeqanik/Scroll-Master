@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'bottom_center.dart';
 import 'main.dart';
-import 'section_desctipion.dart';
+import 'section_descripion.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                       key: myKeys[index],
                       margin: const EdgeInsets.all(17),
                       color: Colors.purple.shade100,
-                      child: SectionDesctipion(
+                      child: SectionDescription(
                         scrollNotifier: _scrollPos,
                         sectionNotifier: _sectionIndex,
                         index: index,
@@ -113,7 +113,6 @@ class _AppBarState extends State<_AppBar> {
         valueListenable: widget.sectionIndex,
         builder: (_, value, __) {
           double barSize = 100; // the actual size of this widget
-
           return Transform.translate(
             offset: const Offset(0, 1),
             child: SizedBox(
