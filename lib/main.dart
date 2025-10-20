@@ -3,7 +3,6 @@ import 'main_app.dart';
 
 final class Sections {
   final String value;
-
   Sections({required this.value});
 }
 
